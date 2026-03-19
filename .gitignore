@@ -1,0 +1,10 @@
+# Brain2 Starter Kit
+.DS_Store
+*.swp
+*.swo
+*~
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+.trash/
+node_modules/
