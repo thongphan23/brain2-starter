@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain2 — Bộ não thứ 2 powered by AI | Thông Phan</title>
+    <meta name="description"
+        content="Brain2 Starter Kit — Biến mọi kiến thức thành vũ khí tái sử dụng. Hệ thống quản lý tri thức cá nhân kết hợp Obsidian + Antigravity AI.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2235;
+            --bg-card-hover: #1e2a42;
+            --text-primary: #f0f4ff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-blue: #3b82f6;
+            --accent-blue-glow: rgba(59, 130, 246, 0.3);
+            --accent-gold: #f59e0b;
+            --accent-gold-glow: rgba(245, 158, 11, 0.2);
+            --accent-emerald: #10b981;
+            --accent-purple: #8b5cf6;
+            --accent-rose: #f43f5e;
+            --border-subtle: rgba(148, 163, 184, 0.1);
+            --radius: 16px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(600px circle at 20% 30%, rgba(59, 130, 246, 0.06), transparent 50%),
+                radial-gradient(500px circle at 80% 70%, rgba(139, 92, 246, 0.05), transparent 50%),
+                radial-gradient(400px circle at 50% 50%, rgba(245, 158, 11, 0.03), transparent 50%);
+            z-index: -1;
+            animation: bgPulse 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgPulse {
+            0% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 16px 0;
+            background: rgba(10, 14, 26, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            transition: all 0.3s;
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-logo span {
+            font-weight: 400;
+            -webkit-text-fill-color: var(--text-secondary);
+        }
+
+        .nav-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border: none;
+            border-radius: 100px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--accent-blue-glow);
+        }
+
+        /* --- HERO --- */
+        .hero {
+            padding: 160px 0 100px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 100px;
+            color: var(--accent-blue);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 32px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            letter-spacing: -1.5px;
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+        }
+
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 650px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 36px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            border: none;
+            border-radius: 100px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.05rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px var(--accent-blue-glow);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: 100px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-blue);
+            color: var(--text-primary);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        /* --- ARCHITECTURE --- */
+        .architecture {
+            padding: 80px 0;
+        }
+
+        .arch-diagram {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            padding: 48px;
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .arch-diagram::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple), var(--accent-gold));
+        }
+
+        .arch-flow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+
+        .arch-node {
+            padding: 20px 32px;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+        }
+
+        .arch-node.user {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .arch-node.ai {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(139, 92, 246, 0.12));
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .arch-node.mcp {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(59, 130, 246, 0.12));
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .arch-node.vault {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(244, 63, 94, 0.08));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .arch-node-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .arch-node-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .arch-node-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .arch-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 0;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .arch-arrow span {
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        /* --- SECTION HEADERS --- */
+        .section-header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+
+        .section-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-blue);
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* --- PROBLEM/SOLUTION --- */
+        .problem-solution {
+            padding: 80px 0;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .comparison-card {
+            padding: 32px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .comparison-card.problem {
+            background: linear-gradient(135deg, rgba(244, 63, 94, 0.05), transparent);
+            border-color: rgba(244, 63, 94, 0.15);
+        }
+
+        .comparison-card.solution {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), transparent);
+            border-color: rgba(16, 185, 129, 0.15);
+        }
+
+        .comparison-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comparison-card ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .comparison-card li {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            padding-left: 28px;
+            position: relative;
+        }
+
+        .comparison-card li::before {
+            position: absolute;
+            left: 0;
+            font-size: 1rem;
+        }
+
+        .comparison-card.problem li::before {
+            content: '❌';
+        }
+
+        .comparison-card.solution li::before {
+            content: '✅';
+        }
+
+        /* --- WORKFLOWS --- */
+        .workflows {
+            padding: 80px 0;
+        }
+
+        .workflow-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .workflow-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            padding: 28px;
+            transition: all 0.3s;
+            cursor: default;
+        }
+
+        .workflow-card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(59, 130, 246, 0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .workflow-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+        }
+
+        .workflow-card h3 {
+            font-family: 'Inter', monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--accent-blue);
+        }
+
+        .workflow-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* --- CONTENT FACTORY --- */
+        .content-factory {
+            padding: 80px 0;
+        }
+
+        .cf-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius);
+            padding: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cf-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-emerald));
+        }
+
+        .dikw-layers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        .dikw-layer {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-subtle);
+            transition: all 0.3s;
+        }
+
+        .dikw-layer:hover {
+            transform: translateX(8px);
+        }
+
+        .dikw-layer.wisdom {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.1), transparent);
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+
+        .dikw-layer.knowledge {
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0.08), transparent);
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        .dikw-layer.information {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.08), transparent);
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .dikw-layer.data {
+            background: linear-gradient(90deg, rgba(148, 163, 184, 0.05), transparent);
+            border-color: rgba(148, 163, 184, 0.15);
+        }
+
+        .dikw-weight {
+            font-family: monospace;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 4px;
+            min-width: 32px;
+            text-align: center;
+        }
+
+        .dikw-layer.wisdom .dikw-weight {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent-gold);
+        }
+
+        .dikw-layer.knowledge .dikw-weight {
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--accent-purple);
+        }
+
+        .dikw-layer.information .dikw-weight {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--accent-blue);
+        }
+
+        .dikw-layer.data .dikw-weight {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-muted);
+        }
+
+        .dikw-name {
+            font-weight: 700;
+            min-width: 120px;
+        }
+
+        .dikw-source {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .dikw-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+
+        /* --- CTA --- */
+        .cta-section {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .cta-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.08));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: var(--radius);
+            padding: 64px 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-card h2 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .cta-card p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 32px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-code {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 16px 24px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: var(--accent-emerald);
+            display: inline-block;
+            margin-bottom: 32px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .cta-code:hover {
+            border-color: var(--accent-emerald);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: all 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .workflow-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .arch-diagram {
+                padding: 24px;
+            }
+
+            .cf-card {
+                padding: 24px;
+            }
+
+            .cta-card {
+                padding: 40px 24px;
+            }
+
+            .dikw-layer {
+                flex-wrap: wrap;
+            }
+
+            .dikw-desc {
+                margin-left: 0;
+                width: 100%;
+                margin-top: 4px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAV -->
+    <nav>
+        <div class="container">
+            <div class="nav-logo">Brain2 <span>by Thông Phan</span></div>
+            <a href="https://github.com/thongphan23/brain2-starter" class="nav-cta" target="_blank">⬇ Clone miễn phí</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">🧠 Open Source · Miễn phí · AI-Powered</div>
+            <h1>Bộ não thứ 2<br><span class="gradient">powered by AI</span></h1>
+            <p class="hero-subtitle">
+                Biến mọi kiến thức bạn học, đọc, trải nghiệm thành <strong>"vũ khí" có thể tái sử dụng</strong>.
+                Ghi chú bằng AI. Nghiên cứu bằng AI. Viết content bằng AI — với TRI THỨC CỦA BẠN.
+            </p>
+            <div class="hero-cta-group">
+                <a href="https://github.com/thongphan23/brain2-starter" class="btn-primary" target="_blank">
+                    🚀 Clone Starter Kit
+                </a>
+                <a href="#how" class="btn-secondary">
+                    Hoạt động thế nào? →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ARCHITECTURE -->
+    <section class="architecture" id="how">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-tag">⚡ Kiến trúc</div>
+                <h2>Nói chuyện với AI, vault tự lớn</h2>
+                <p>Bạn KHÔNG cần mở Obsidian để ghi chú. <br>Antigravity AI làm tất cả qua MCP protocol.</p>
+            </div>
+
+            <div class="arch-diagram fade-in">
+                <div class="arch-flow">
+                    <div class="arch-node user">
+                        <div class="arch-node-label">Bạn</div>
+                        <div class="arch-node-title">💬 Chat Interface</div>
+                        <div class="arch-node-desc">"Ghi insight này..." · "/deep-research về X" · "Viết bài dùng vault"
+                        </div>
+                    </div>
+
+                    <div class="arch-arrow"><span>↓</span> Nói chuyện tự nhiên</div>
+
+                    <div class="arch-node ai">
+                        <div class="arch-node-label">AI Agent</div>
+                        <div class="arch-node-title">🤖 Antigravity</div>
+                        <div class="arch-node-desc">Hiểu Brain2 rules · Chạy workflows · Phân tích vault</div>
+                    </div>
+
+                    <div class="arch-arrow"><span>↓</span> MCP Protocol</div>
+
+                    <div class="arch-node mcp">
+                        <div class="arch-node-label">Bridge</div>
+                        <div class="arch-node-title">🔌 Obsidian MCP</div>
+                        <div class="arch-node-desc">Đọc · Ghi · Tìm kiếm · List notes — không cần mở app</div>
+                    </div>
+
+                    <div class="arch-arrow"><span>↓</span> File system</div>
+
+                    <div class="arch-node vault">
+                        <div class="arch-node-label">Tri thức gốc</div>
+                        <div class="arch-node-title">📂 Obsidian Vault</div>
+                        <div class="arch-node-desc">Markdown files · Cross-linked · Searchable · Portable</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROBLEM / SOLUTION -->
+    <section class="problem-solution">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-tag">💡 Tại sao</div>
+                <h2>Kiến thức mà không dùng lại = lãng phí</h2>
+            </div>
+
+            <div class="comparison-grid fade-in">
+                <div class="comparison-card problem">
+                    <h3>❌ Không có Brain2</h3>
+                    <ul>
+                        <li>Đọc sách xong → quên 90% sau 1 tuần</li>
+                        <li>Viết content → AI generic, không chiều sâu</li>
+                        <li>Kiến thức rải rác 5 app khác nhau</li>
+                        <li>"Biết rồi mà không nhớ" — lặp lại mãi</li>
+                        <li>Không biết mình biết gì, không biết gì</li>
+                    </ul>
+                </div>
+                <div class="comparison-card solution">
+                    <h3>✅ Có Brain2</h3>
+                    <ul>
+                        <li>Mỗi insight → atomic note → tái sử dụng mãi</li>
+                        <li>Content inject stories + insights CÁ NHÂN</li>
+                        <li>1 vault, cross-linked, AI tìm kiếm</li>
+                        <li>/brain-gym ôn luyện, /spaced-usage dùng lại</li>
+                        <li>/keystone-scan → AI phân tích gap + đề xuất</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WORKFLOWS -->
+    <section class="workflows">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-tag">🛠️ Workflows</div>
+                <h2>6 lệnh, 1 hệ thống</h2>
+                <p>Gõ lệnh trong Antigravity → AI làm phần còn lại</p>
+            </div>
+
+            <div class="workflow-grid fade-in">
+                <div class="workflow-card">
+                    <div class="workflow-icon" style="background: rgba(245, 158, 11, 0.1);">💭</div>
+                    <h3>/reflect</h3>
+                    <p>Bắt insight nhanh nhất có thể. Nói 1 câu → AI tạo atomic note, tự cross-link.</p>
+                </div>
+
+                <div class="workflow-card">
+                    <div class="workflow-icon" style="background: rgba(59, 130, 246, 0.1);">🧠</div>
+                    <h3>/deep-research</h3>
+                    <p>Nghiên cứu sâu bất kỳ chủ đề nào. AI scan vault → research online → atomize vào vault.</p>
+                </div>
+
+                <div class="workflow-card">
+                    <div class="workflow-icon" style="background: rgba(16, 185, 129, 0.1);">💪</div>
+                    <h3>/brain-gym</h3>
+                    <p>Ôn luyện 15-30'. AI chọn notes cần review → Active Recall → Connection Challenge.</p>
+                </div>
+
+                <div class="workflow-card">
+                    <div class="workflow-icon" style="background: rgba(244, 63, 94, 0.1);">📖</div>
+                    <h3>/story-bank</h3>
+                    <p>Kể story thô → AI cấu trúc thành atoms. 1 story có thể tạo nhiều notes.</p>
+                </div>
+
+                <div class="workflow-card">
+                    <div class="workflow-icon" style="background: rgba(139, 92, 246, 0.1);">🔑</div>
+                    <h3>/keystone-scan</h3>
+                    <p>Gap analysis vault. AI quét MOCs → phát hiện lỗ hổng → gợi ý concept mới.</p>
+                </div>
+
+                <div class="workflow-card">
+                    <div class="workflow-icon" style="background: rgba(6, 182, 212, 0.1);">🔁</div>
+                    <h3>/spaced-usage</h3>
+                    <p>Dùng tri thức cũ trong context mới. Chống bão hòa, tạo insight mới.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTENT FACTORY -->
+    <section class="content-factory">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-tag">✍️ Content Factory</div>
+                <h2>Viết content có trí tuệ — không phải AI generic</h2>
+                <p>Brain2 + Content Factory = Bài viết inject stories cá nhân + insights sâu</p>
+            </div>
+
+            <div class="cf-card fade-in">
+                <h3 style="font-size: 1.2rem; margin-bottom: 8px;">DIKW Model — 4 tầng tri thức</h3>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">AI ưu tiên inject từ tầng cao → thấp.
+                    Content có Wisdom layer = content phân biệt bạn với mọi người khác.</p>
+
+                <div class="dikw-layers">
+                    <div class="dikw-layer wisdom">
+                        <div class="dikw-weight">×10</div>
+                        <div class="dikw-name">🏆 WISDOM</div>
+                        <div class="dikw-source">Stories/</div>
+                        <div class="dikw-desc">Câu chuyện thật → trực giác, không ai bắt chước được</div>
+                    </div>
+                    <div class="dikw-layer knowledge">
+                        <div class="dikw-weight">×7</div>
+                        <div class="dikw-name">🧠 KNOWLEDGE</div>
+                        <div class="dikw-source">Insights/ + Frameworks/</div>
+                        <div class="dikw-desc">Hiểu WHY → backbone cho deep dive</div>
+                    </div>
+                    <div class="dikw-layer information">
+                        <div class="dikw-weight">×3</div>
+                        <div class="dikw-name">📘 INFORMATION</div>
+                        <div class="dikw-source">Concepts/</div>
+                        <div class="dikw-desc">Hiểu WHAT + HOW → giải thích thuật ngữ</div>
+                    </div>
+                    <div class="dikw-layer data">
+                        <div class="dikw-weight">×1</div>
+                        <div class="dikw-name">📊 DATA</div>
+                        <div class="dikw-source">Quotes/</div>
+                        <div class="dikw-desc">Số liệu, trích dẫn → gia vị, evidence</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-card fade-in">
+                <h2>Bắt đầu xây Brain2 <span class="gradient">ngay hôm nay</span></h2>
+                <p>Miễn phí, open source. Clone về, chạy 1 lệnh — vault của bạn sẵn sàng.</p>
+
+                <div class="cta-code"
+                    onclick="navigator.clipboard.writeText('git clone https://github.com/thongphan23/brain2-starter.git ~/brain2'); this.textContent='✅ Đã copy!'">
+                    git clone https://github.com/thongphan23/brain2-starter.git ~/brain2
+                </div>
+
+                <br>
+                <a href="https://github.com/thongphan23/brain2-starter" class="btn-primary" target="_blank">
+                    🚀 GitHub Repo
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p>Brain2 Starter Kit · Built by <a href="https://thongphan.com" target="_blank">Thông Phan</a> · MIT
+                License</p>
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer for fade-in
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+
+</html>
